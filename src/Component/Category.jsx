@@ -1,67 +1,83 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect } from "react"
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
+import { Toaster, toast } from "react-hot-toast";
+
 
 const CategoryManager = () => {
-  const [categories, setCategories] = useState([]);
-  const [categoryName, setCategoryName] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [subCategoryName, setSubCategoryName] = useState("");
+  const [categories, setCategories] = useState([])
+  const [categoryName, setCategoryName] = useState("")
+
+  const [selectedCategory, setSelectedCategory] = useState("") 
+  const [subCategoryName, setSubCategoryName] = useState("")
   const navigate=useNavigate()
-
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/product/getcategory")
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error)
+    }
+  };
+  
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/product/getcategory");
-        console.log("Fetched category:", response.data);
-
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
     fetchCategories();
-  }, []);
-
+  }, [])
+  
   // Add a new category
   async function addCategory() {
     if (categoryName.trim() === "") return;
   
     try {
-      const response = await axios.post("http://localhost:5000/product/category", { name: categoryName });
+       await axios.post("http://localhost:5000/product/category", { name: categoryName })
   
-      const newCategory = { ...response.data, subcategories: [] };
-      setCategories((prevCategories) => [...prevCategories, newCategory]);
+     
+      fetchCategories();
       setCategoryName("");
     } catch (error) {
-      console.error("Error adding category:", error);
+      console.error("Error adding category:", error)
+      if (error.response.status === 400) {
+          
+        toast.error("category already exists!")
+    }
     }
   }
   
   const addSubCategory = async () => {
-    if (!selectedCategory || subCategoryName.trim() === "") return;
+    if (!selectedCategory || subCategoryName.trim() === "") return
   
     try {
       const response = await axios.post("http://localhost:5000/product/subcategory", {
         categoryName: selectedCategory,
         subCategoryName,
       });
-      console.log("Subcategory Response:", response.data);
+      console.log("Subcategory Response:", response.data)
 
   
       setCategories((prevCategories) =>
         prevCategories.map((cat) =>
           cat.name === selectedCategory
-            ? { ...cat, subcategories: [...cat.subcategories, response.data.name] }
+            ? { ...cat, subcategories: [...(cat.subcategories || []), response.data.name] }
             : cat
         )
       );
       
-      setSubCategoryName("");
+      fetchCategories()
+
+      setSubCategoryName("")
     } catch (error) {
-      console.error("Error adding subcategory:", error);
+      console.error("Error adding subcategory:", error)
+      if (error.response) {
+        console.error("Backend Response:", error.response.data);
+        if (error.response.status === 400) {
+          
+            toast.error("Subcategory already exists!")
+        }
     }
-  };
+    }
+  }
+
+
   const handleback=()=>{
     navigate("/productlist")
   }
@@ -131,20 +147,19 @@ const CategoryManager = () => {
           <p className="text-gray-400 text-lg">No categories added.</p>
         ) : (
           <ul className="space-y-3">
-            {categories.map((cat, index) => (
-              <li key={index} className="bg-gray-700 p-3 rounded-lg text-lg">
-                <strong>{cat.name}</strong>
-                {cat.subcategories.length > 0 && (
-  <ul className="mt-1 text-sm text-gray-300 list-disc list-inside pl-4">
-    {cat.subcategories.map((sub, subIndex) => (
-      <li key={subIndex}>{typeof sub === "string" ? sub : sub.name}</li> 
-    ))}
-  </ul>
-)}
-
-              </li>
-            ))}
-          </ul>
+           {categories.map((cat, index) => (
+  <li key={index} className="bg-gray-700 p-3 rounded-lg text-lg">
+    <strong>{cat.name}</strong>
+    {Array.isArray(cat.subcategories) && cat.subcategories.length > 0 && (
+      <ul className="mt-1 text-sm text-gray-300 list-disc list-inside pl-4">
+        {cat.subcategories.map((sub, subIndex) => (
+          <li key={subIndex}>{sub?.name || sub}</li> 
+        ))}
+      </ul>
+    )}
+  </li>
+))}
+   </ul>
         )}
       </div>
       

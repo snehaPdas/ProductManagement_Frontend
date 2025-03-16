@@ -15,10 +15,12 @@ function ProductList() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/product/getproduct");
+        const response = await axios.get("http://localhost:5000/product/getproduct")
+        console.log("getting",response)
         setProducts(response.data);
       } catch (error) {
-        console.log(error);
+        console.log(error)
+        setProducts([])
       }
     };
     fetchProducts();
@@ -42,7 +44,7 @@ function ProductList() {
   // **Pagination Logic**
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = Array.isArray(products) ? products.slice(indexOfFirstProduct, indexOfLastProduct) : [];
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   return (

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "axios"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
+import { Toaster, toast } from "react-hot-toast";
+
 
 
 const Signup = () => {
@@ -14,7 +16,7 @@ const Signup = () => {
   const handleChange = (e) => {
     setSignupData({ ...signupData, [e.target.name]: e.target.value })
     
-  };
+  }
 
   const submitSignup = async(e) => {
     console.log("checkingg.......")
@@ -24,12 +26,21 @@ const Signup = () => {
         console.log("response issssss",response)
     if(response.status === 200 || response.status === 201)
 {
+  toast.success("Register successfully")
   navigate("/login")
   
 }
 
+
     } catch (error) {
-        console.log(error)
+      if (error.response && error.response.status === 400) {
+        console.log("Error response:", error.response.status)
+
+       toast.error("user already exist")
+    } else {
+        alert("Signup failed. Please try again.");
+        console.log("Signup error:", error);
+    }
         
     }
   }

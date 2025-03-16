@@ -31,13 +31,20 @@ console.log("LoginData=>",LoginData)
           
         } catch (error) {
 
-            console.log(error)
-            toast.error("Login failed");
+          if (error.response && error.response.status === 400) {
+            console.log("Error response:", error.response.status)
+    
+           toast.error("user not exist")
+        } else {
+          
+            console.log("login error:", error);
+        }
         }
     }
     return (
         <section className="bg-gray-800 h-screen pt-[10%] relative flex items-center justify-center">
           <div className="top-blue w-[250px] h-[250px] bg-blue-400 rounded-full absolute top-[10%] left-[50%]"></div>
+          <Toaster />
           <div className="bottom-pink w-[280px] h-[280px] bg-pink-400 rounded-full absolute top-[50%] left-[12%] lg:left-[30%]"></div>
           <div className="top-orange w-[300px] h-[300px] bg-orange-400 rounded-full absolute top-[5%] left-[5%] md:left-[23%] lg:left-[30%]"></div>
           

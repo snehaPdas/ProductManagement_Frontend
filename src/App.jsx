@@ -11,13 +11,16 @@ import {
  import Category from './Component/Category'
  import Product from "./Component/Product"
  import WishList from "./Component/WishList"
+ import { Toaster } from 'react-hot-toast';
+
 
  import { WishlistProvider } from "./Context/WishListContext";
 
 function App() {
   return (
-    <WishlistProvider>
 
+    <WishlistProvider>
+<Toaster />
    <Router>
           <Routes>
           <Route path="/" element={<Signup/>}/>
