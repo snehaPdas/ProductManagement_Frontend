@@ -15,7 +15,7 @@ export const WishlistProvider = ({ children }) => {
   }, []);
 
   const fetchWishlist = async () => {
-    console.log("???????/")
+  
     try {
       const response = await axios.get("http://localhost:5000/product/getwishlist");
       console.log("wishlist data",response)
@@ -52,13 +52,26 @@ export const WishlistProvider = ({ children }) => {
   };
   
   const removeFromWishlist = async (productId) => {
+    console.log("The product ID is", productId);
     try {
-      const response = await axios.delete(`http://localhost:5000/product/removewishlist/${productId}`);
-      setWishlist(response.data);
+      const response = await axios.delete(
+        `http://localhost:5000/product/removewishlist/${productId}`
+      );
+      console.log("Remove Response:", response);
+  
+      if (response.data.removeWishlist) {  
+        setWishlist((prevWishlist) =>
+          prevWishlist.filter((item) => item._id !== productId)
+        );
+        toast.success("Product removed from wishlist!");
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
     } catch (error) {
       console.error("Error removing from wishlist:", error);
     }
   };
+  
 
   return (
     <WishlistContext.Provider value={{ wishlist, fetchWishlist, addToWishlist, removeFromWishlist }}>
