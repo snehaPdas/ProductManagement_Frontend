@@ -22,7 +22,7 @@ const Signup = () => {
     console.log("checkingg.......")
     e.preventDefault()
     try {
-        const response=await axios.post("http://localhost:5000/user/signup",signupData)
+        const response=await axios.post(import.meta.env.VITE_API+"/user/signup",signupData)
         console.log("response issssss",response)
     if(response.status === 200 || response.status === 201)
 {

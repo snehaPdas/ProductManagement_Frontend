@@ -20,7 +20,7 @@ const Product = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/product/getcategory");
+        const response = await axios.get(import.meta.env.VITE_API+"/product/getcategory");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error)
@@ -50,7 +50,7 @@ const Product = () => {
     formData.append("subcategory", selectedSubCategory)
 
     try {
-      await axios.post("http://localhost:5000/product/addproduct", formData)
+      await axios.post(import.meta.env.VITE_API+"/product/addproduct", formData)
       toast.success("product added successfully")
       setProductName("")
       setImage(null)

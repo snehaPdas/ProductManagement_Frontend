@@ -11,7 +11,8 @@ import {
  import Category from './Component/Category'
  import Product from "./Component/Product"
  import WishList from "./Component/WishList"
- import { Toaster } from 'react-hot-toast';
+ import { Toaster } from 'react-hot-toast'
+ import ProductEdit from './Component/ProductEdit';
 
 
  import { WishlistProvider } from "./Context/WishListContext";
@@ -30,6 +31,9 @@ function App() {
           <Route path="/Product" element={<Product/>}/>
 
           <Route path="/wishlist" element={<WishList/>}/>
+          <Route path="/productedit/:id" element={<ProductEdit/>}/>
+
+
          
 </Routes>
    </Router>

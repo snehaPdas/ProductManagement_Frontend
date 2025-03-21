@@ -13,7 +13,7 @@ const CategoryManager = () => {
   const navigate=useNavigate()
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/product/getcategory")
+      const response = await axios.get(import.meta.env.VITE_API+"/product/getcategory")
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error)
@@ -29,7 +29,7 @@ const CategoryManager = () => {
     if (categoryName.trim() === "") return;
   
     try {
-       await axios.post("http://localhost:5000/product/category", { name: categoryName })
+       await axios.post(import.meta.env.VITE_API+"/product/category", { name: categoryName })
   
      
       fetchCategories();
@@ -47,7 +47,7 @@ const CategoryManager = () => {
     if (!selectedCategory || subCategoryName.trim() === "") return
   
     try {
-      const response = await axios.post("http://localhost:5000/product/subcategory", {
+      const response = await axios.post(import.meta.env.VITE_API+"/product/subcategory", {
         categoryName: selectedCategory,
         subCategoryName,
       });

@@ -21,7 +21,7 @@ console.log("LoginData=>",LoginData)
         try {
             console.log("entered")
 
-            const response=await axios.post("http://localhost:5000/user/login",LoginData) 
+            const response=await axios.post(import.meta.env.VITE_API+"/user/login",LoginData) 
             console.log(response)
             if(response.status===200){
                 toast.success("Login successful");

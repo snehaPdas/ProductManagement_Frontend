@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import img from "../assets/machine3.avif"
+import { Pencil } from "lucide-react";
+
 
 import { useWishlist } from "../Context/WishListContext";
 
@@ -15,7 +17,7 @@ function ProductList() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/product/getproduct")
+        const response = await axios.get(import.meta.env.VITE_API+"/product/getproduct")
         console.log("getting",response)
         setProducts(response.data);
       } catch (error) {
@@ -43,7 +45,16 @@ function ProductList() {
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = Array.isArray(products) ? products.slice(indexOfFirstProduct, indexOfLastProduct) : [];
-  const totalPages = Math.ceil(products.length / productsPerPage);
+  const totalPages = Math.ceil(products.length / productsPerPage)
+
+  const handleEditProduct=(productId)=>{
+    navigate(`/productedit/${productId}`);
+  }
+
+ 
+  const handleEditCategory=()=>{
+
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6" style={{ backgroundImage: `url(${img})`, backgroundSize: "cover", backgroundPosition: "center" }}>
@@ -85,8 +96,29 @@ function ProductList() {
                 <td className="p-3">
                 <img src={product.pImage} alt={product.pName} className="w-24 h-24 rounded-md" />
                 </td>
-                <td className="p-3">{product.pName}</td>
-                <td className="p-3">{product.category}</td>
+                <td className="p-3">
+  <div className="flex items-center space-x-2">
+    {product.pName}
+    <Pencil 
+      className="ml-2 cursor-pointer text-gray-400 hover:text-white" 
+      size={16} 
+      onClick={() => handleEditProduct(product._id)} 
+    />
+  </div>
+</td>
+
+<td className="p-3">
+  <div className="flex items-center space-x-2">
+    {product.category}
+    <Pencil 
+      className="ml-2 cursor-pointer text-gray-400 hover:text-white" 
+      size={16} 
+      onClick={() => handleEditCategory(product.category)} 
+    />
+  </div>
+</td>
+
+
                 <td className="p-3">{product.subCategory}</td>
                 <td className="p-3">
                   <button onClick={() => handleaddToWishlist(product)} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-md"

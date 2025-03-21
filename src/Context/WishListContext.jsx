@@ -17,7 +17,7 @@ export const WishlistProvider = ({ children }) => {
   const fetchWishlist = async () => {
   
     try {
-      const response = await axios.get("http://localhost:5000/product/getwishlist");
+      const response = await axios.get(import.meta.env.VITE_API+"/product/getwishlist");
       console.log("wishlist data",response)
       
       if (Array.isArray(response.data)) {
@@ -32,7 +32,7 @@ export const WishlistProvider = ({ children }) => {
 
   const addToWishlist = async (product) => {
     try {
-      const response = await axios.post("http://localhost:5000/product/addwishlist", { productId: product._id });
+      const response = await axios.post(import.meta.env.VITE_API+"/product/addwishlist", { productId: product._id });
       console.log("wishlist added", response);
   
       if (response.data.addwishList) {  
