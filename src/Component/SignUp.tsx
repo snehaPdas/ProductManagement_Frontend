@@ -1,59 +1,60 @@
-import { useState } from "react";
-import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import { useState, ChangeEvent, FormEvent } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 
-
+interface SignupData {
+  name: string;
+  email: string;
+  password: string;
+}
 
 const Signup = () => {
-  const [signupData, setSignupData] = useState({
+  const [signupData, setSignupData] = useState<SignupData>({
     name: "",
     email: "",
     password: "",
   });
+
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setSignupData({ ...signupData, [e.target.name]: e.target.value })
-    
-  }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSignupData({ ...signupData, [e.target.name]: e.target.value });
+  };
 
-  const submitSignup = async(e) => {
-    console.log("checkingg.......")
-    e.preventDefault()
+  const submitSignup = async (e: FormEvent) => {
+    e.preventDefault();
+    console.log("checkingg.......");
+
     try {
-        const response=await axios.post(import.meta.env.VITE_API+"/user/signup",signupData)
-        console.log("response issssss",response)
-    if(response.status === 200 || response.status === 201)
-{
-  toast.success("Register successfully")
-  navigate("/login")
-  
-}
+      const response = await axios.post(`${import.meta.env.VITE_API}/user/signup`, signupData);
+      console.log("response issssss", response);
 
-
-    } catch (error) {
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Register successfully");
+        navigate("/login");
+      }
+    } catch (error: any) {
       if (error.response && error.response.status === 400) {
-        console.log("Error response:", error.response.status)
-
-       toast.error("user already exist")
-    } else {
+        console.log("Error response:", error.response.status);
+        toast.error("User already exists");
+      } else {
         alert("Signup failed. Please try again.");
         console.log("Signup error:", error);
+      }
     }
-        
-    }
-  }
-   
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-black relative">
+      <Toaster />
       {/* Floating Background Elements */}
       <div className="absolute w-72 h-72 bg-purple-600 opacity-20 rounded-full top-10 left-10 blur-2xl animate-pulse"></div>
       <div className="absolute w-64 h-64 bg-blue-500 opacity-20 rounded-full bottom-10 right-10 blur-2xl animate-pulse"></div>
-  
+
       <div className="relative bg-gray-900 p-8 rounded-xl shadow-2xl w-96 border border-gray-700 transform hover:scale-105 transition duration-300">
         <h2 className="text-3xl font-semibold text-center text-white">Sign Up</h2>
-  
+
         <form onSubmit={submitSignup} className="mt-6">
           {/* Name */}
           <div className="mb-4">
@@ -99,7 +100,7 @@ const Signup = () => {
             Sign Up
           </button>
         </form>
-  
+
         <p className="mt-4 text-center text-gray-400">
           Already have an account?{" "}
           <a href="/login" className="text-purple-400 hover:underline">
@@ -109,7 +110,6 @@ const Signup = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Signup;
