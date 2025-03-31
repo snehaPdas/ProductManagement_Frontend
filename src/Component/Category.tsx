@@ -18,9 +18,19 @@ const CategoryManager = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get(import.meta.env.VITE_API + "/product/getcategory");
-      setCategories(response.data);
+      console.log("Response Data:", response.data); // Check the structure of the response
+
+      // If the response is an object containing 'categories' key, extract it
+      const fetchedCategories = Array.isArray(response.data) ? response.data : response.data.categories;
+      
+      if (fetchedCategories) {
+        setCategories(fetchedCategories);
+      } else {
+        toast.error("Failed to load categories.");
+      }
     } catch (error) {
       console.error("Error fetching categories:", error);
+      toast.error("Error fetching categories.");
     }
   };
 
@@ -29,12 +39,15 @@ const CategoryManager = () => {
   }, []);
 
   async function addCategory() {
-    if (categoryName.trim() === "") return;
-
+    if (categoryName.trim() === "") {
+      toast.error("Category name cannot be empty or just spaces!");
+      return;
+    }
     try {
       await axios.post(import.meta.env.VITE_API + "/product/category", { name: categoryName });
       fetchCategories();
       setCategoryName("");
+      toast.success("Category added successfully!");
     } catch (error: any) {
       console.error("Error adding category:", error);
       if (error.response?.status === 400) {
@@ -44,17 +57,18 @@ const CategoryManager = () => {
   }
 
   const addSubCategory = async () => {
-    if (!selectedCategory || subCategoryName.trim() === "") return;
-
+    if (!selectedCategory || subCategoryName.trim() === "") {
+      toast.error("Subcategory name cannot be empty or just spaces!");
+      return;
+    }
     try {
-      const response = await axios.post(import.meta.env.VITE_API + "/product/subcategory", {
+      await axios.post(import.meta.env.VITE_API + "/product/subcategory", {
         categoryName: selectedCategory,
         subCategoryName,
       });
-
-      console.log("Subcategory Response:", response.data);
       fetchCategories();
       setSubCategoryName("");
+      toast.success("Subcategory added successfully!");
     } catch (error: any) {
       console.error("Error adding subcategory:", error);
       if (error.response?.status === 400) {
@@ -129,15 +143,13 @@ const CategoryManager = () => {
             {categories.map((cat, index) => (
               <li key={index} className="bg-gray-700 p-3 rounded-lg text-lg">
                 <strong>{cat.name}</strong>
-                {cat.subcategories?.length && cat.subcategories.length > 0 && (
-  <ul className="mt-1 text-sm text-gray-300 list-disc list-inside pl-4">
-    {cat.subcategories.map((sub, subIndex) => (
-      <li key={subIndex}>{sub.name}</li>
-    ))}
-  </ul>
-)}
-
-
+                {cat.subcategories && cat.subcategories.length > 0 && (
+                  <ul className="mt-1 text-sm text-gray-300 list-disc list-inside pl-4">
+                    {cat.subcategories.map((sub, subIndex) => (
+                      <li key={subIndex}>{sub.name}</li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
