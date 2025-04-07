@@ -91,7 +91,7 @@ if (!name.trim()) {
               value={signupData.name}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white"
-              required
+              
             />
             {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
           </div>
@@ -105,7 +105,7 @@ if (!name.trim()) {
               value={signupData.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white"
-              required
+              
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>

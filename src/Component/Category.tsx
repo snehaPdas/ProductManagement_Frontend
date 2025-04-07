@@ -20,7 +20,7 @@ const CategoryManager = () => {
       const response = await axios.get(import.meta.env.VITE_API + "/product/getcategory");
       console.log("Response Data:", response.data); // Check the structure of the response
 
-      // If the response is an object containing 'categories' key, extract it
+      
       const fetchedCategories = Array.isArray(response.data) ? response.data : response.data.categories;
       
       if (fetchedCategories) {
